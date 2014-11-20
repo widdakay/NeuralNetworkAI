@@ -15,7 +15,7 @@ class Network(object):
 
 	def simulate(self, input):
 		for i in range(len(self.network[0])):
-			self.netowrk[0][i] = input[i]
+			self.network[0][i] = input[i]
 
 		for val in self.network[1]:
 			pass #Bself.
