@@ -12,12 +12,15 @@ class App:
 		self.startTime = time.time()
 
 		self.size = self.width, self.height = -1, -1
+		
 		self.map = Map(32, 32)
 		self.map.generate()
+
 		self.viewPos = [0, 0]
 		self.keys = {}
 		for i in range(300):
 			self.keys[i] = False
+		self.creature = Creature()
  
 	def on_init(self):
 		pygame.init()
@@ -52,6 +55,9 @@ class App:
 		self.viewPos[1] += mouse_pos[1]-self.height/2
 
 		pygame.mouse.set_pos([self.width/2, self.height/2])
+
+
+		self.creature.sim(self.map)
 		
 
 	def on_render(self):
@@ -59,7 +65,10 @@ class App:
 		if self.frameCount % 60 == 0:
 			# regenerate terrain every second
 			self.map.generate()
+
 		self.map.draw(self.surf, self.viewPos)
+		self.creature.draw(self.surf)
+
 		self.frameCount += 1
 
 	def on_cleanup(self):
@@ -85,7 +94,16 @@ class App:
 			pygame.display.flip()
 		self.on_cleanup()
 
- 
+class Creature():
+	def __init__(self):
+		self.pos = [0,0]
+		self.hunger = 0
+		self.health = 10
+
+	def draw(self, surface):
+		pass
+	def sim(self, map):
+		pass
 
 
 
@@ -137,9 +155,9 @@ class Map():
 		for x in range(len(self.map)):
 			for y in range(len(self.map[x])):
 				self.map[x][y] *= level1[x/8][y/8]*0.25+1
-				self.map[x][y] *= level2[x/4][y/4]*0.25+1
-				self.map[x][y] *= level3[x/2][y/2]*0.25+1
-				self.map[x][y] *= level4[x/1][y/1]*0.25+1
+				self.map[x][y] *= 0.5*level2[x/4][y/4]*0.25+1
+				self.map[x][y] *= 0.25*level3[x/2][y/2]*0.25+1
+				self.map[x][y] *= 0.125*level4[x/1][y/1]*0.25+1
 
 		for x in range(len(self.map)):
 			for y in range(len(self.map[x])):
@@ -191,6 +209,7 @@ def hexagon(x, y, size):
 		(x+short, y+size*2),
 		(x, y+size)
 		)
+
 if __name__ == "__main__" :
 	app = App()
 	app.main()

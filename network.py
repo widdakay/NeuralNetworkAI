@@ -1,4 +1,4 @@
-import math
+import math, random
 
 
 class Network(object):
@@ -6,23 +6,28 @@ class Network(object):
 		super(Network, self).__init__()
 		self.arg = arg
 	def init(self, numInput, numHidden, numOutput):
-		self.numInput = numInput
-		self.numHidden = numHidden
-		self.numOutput = numOutput
-		self.input = [0 for x in range(numInput)]
-		self.hidden = [[0] for x in range(numHidden)]
-		self.output = [0 for x in range(numOutput)]
-		self.weights = [0 for x in range(numHidden)]
+		self.network = [
+					[0,0,0],
+					[Neuron(), Neuron()],
+					[Neuron(), Neuron(), Neuron()]
+					]
+
 
 	def simulate(self, input):
-		for neuron in self.hidden:
-			for inputVal in self.input:
-				pass
+		for i in range(len(self.network[0])):
+			self.netowrk[0][i] = input[i]
 
+		for val in self.network[1]:
+			pass #Bself.
 
 		return output
+
 	def learnItter(self):
 		pass
+
 class Neuron():
 	def __init__(self):
-		pass
+		self.weights = [random.random(),random.random(),random.random()]
+		self.bias = random.random()
+		self.output = 0
+
