@@ -9,14 +9,14 @@ class Neuron():
         self.output = 0
         self.sum = 0
         self.bias = 1
-
+        
     def activation(self,newInputs):
         sum = 0  #Every activation you need to reset the sum.
         self.inputs = newInputs
 
         for i in xrange(len(self.inputs)):
             self.sum += self.inputs[i] * self.weights[i]
-            #self.sum += np.multiply(self.inputs[i], self.weights[i]) #numpy is slower! 
+
         self.sum += self.bias 
 
         if self.sum <=  0:
@@ -38,45 +38,38 @@ class Network():
             self.letterTable[i] = values[i]
 
     def __init__(self,sizes):
-        
-        self.letterTable()
-    
         self.sizes = sizes
+        self.letterTable()
         self.network = [] 
-    
+        self.outputs = []
+
         for i in xrange(len(self.sizes)):
             self.network.append([])
+            self.outputs.append([])
+
             for x in xrange(self.sizes[i]):
                 self.network[i].append(Neuron())
-
+                self.outputs[i].append(0)                     
+        
+        for i in xrange(len(self.sizes)):
+            for x in xrange(self.sizes[i]):
                 if i == 0:
-                    #Not sure about this line, may just be one weight value (not the whole size)
-                    #self.network[i][x].weights = np.random.randn(sizes[i])
-                    
                     self.network[i][x].weights = np.random.randn(1)
-                    #print self.network[i][x].weights
                 else:    
                     self.network[i][x].weights = np.random.randn(sizes[i-1]) 
     
     def predict(self,input):
-        self.outputs = []
-        
-        for i in xrange(len(self.sizes)):
-            self.outputs.append([])
-
+        for i in xrange(len(self.sizes)):    
             for x in xrange(self.sizes[i]):
-
                 if i == len(self.sizes)-1: #-1 is beause the for loop is indexed from 0
-                    self.outputs[i].append(self.network[i][x].activation(self.outputs[i-1]))
+                    self.outputs[i][x] = self.network[i][x].activation(self.outputs[i-1])
                     if x == (self.sizes[i]-1): #You need to -1 again!       
                         return self.outputs[i]
 
                 elif i == 0:
-                    self.outputs[0].append(self.network[i][x].activation(map(int,str(input[x]))))
-                    #Not sure if this is right, but seems to be working. Just wanting to make sure that the input neurons are working.
+                    self.outputs[0][x] = self.network[i][x].activation(map(int, str(input[x]))) #Now this is realy not working, I don't need to guess... D:
                 else:
-                    self.outputs[i].append(self.network[i][x].activation(self.outputs[i-1]))
-                            
+                    self.outputs[i][x] = self.network[i][x].activation(self.outputs[i-1])
     
     def convert(self,string):
         array = [0] * self.sizes[0]
@@ -95,7 +88,7 @@ class Network():
                 string += ' '
         return string
 
-    def cost(self,input,output):         
+    def cost(self,input,output): #Source: http://rosettacode.org/wiki/Levenshtein_distance#Python         
         if len(input) > len(output):
             input,output = output,input
         distances = range(len(input) + 1)
@@ -114,17 +107,18 @@ class Network():
     def train():
         pass
 
-
-network = Network([780,10000,10,1000])
+network = Network([780,1000,10,1000,780])
 
 def test(string):
     return network.unconvert(network.predict(network.convert(string)))
-start = time.time()
 
-print test("eeeeeeeeeeeeeeeeeeeeeeeeee")
-
-end = time.time()
-
-print "Took:",end - start,"seconds"
-
+def benchmark():
+    for i in xrange(10000):
+        network = Network([1,i,i,i])
+        print "3 Layers:","1 Layer of One Neuron","and 3 layers of",i,"neurons"
+        start = time.time()
+        network.predict([1])
+        end = time.time()
+        print "Took:",end - start,"seconds"
+benchmark()
 
