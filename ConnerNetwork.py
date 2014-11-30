@@ -34,7 +34,7 @@ class Network():
         values = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
 
         for i in xrange(len(values)):
-            self. letterTable[values[i]] = i
+            self.letterTable[values[i]] = i
             self.letterTable[i] = values[i]
 
     def __init__(self,sizes):
@@ -67,7 +67,8 @@ class Network():
                         return self.outputs[i]
 
                 elif i == 0:
-                    self.outputs[0][x] = self.network[i][x].activation(map(int, str(input[x]))) #Now this is realy not working, I don't need to guess... D:
+                    #Now this is realy not working, I don't need to guess... D:
+                    self.outputs[0][x] = self.network[i][x].activation(map(int, str(input[x])))
                 else:
                     self.outputs[i][x] = self.network[i][x].activation(self.outputs[i-1])
     
@@ -120,5 +121,6 @@ def benchmark():
         network.predict([1])
         end = time.time()
         print "Took:",end - start,"seconds"
-benchmark()
+if __name__ == "__main__":
+    benchmark()
 
