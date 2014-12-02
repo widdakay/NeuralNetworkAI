@@ -12,12 +12,12 @@ class Creature():
 
 
 	def draw(self, surf, viewPos, scale):
-		color = (127,255,0)
+		color = (191,255,32)
 		short = scale/(2*math.sqrt(3))
 
 		offset = [
-		int(viewPos[0] + self.pos[0]*(short*3)),
-		int(viewPos[1] + self.pos[1]*scale+self.pos[0]*(scale/2))
+		int(viewPos[0] + self.pos[0]*(short*3) + short*2),
+		int(viewPos[1] + self.pos[1]*scale+self.pos[0]*(scale/2) + scale/2)
 		]
 
 		pygame.draw.circle(surf, color, offset, int(scale/2))

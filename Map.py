@@ -85,6 +85,8 @@ class Map():
 				side = short*2
 
 				pygame.draw.polygon(surf, color, hexagon(x*(short*3)+offset[0], y*scale+x*(scale/2)+offset[1], scale/2))
+				pygame.draw.lines(surf, (255,255,255), True, hexagon(x*(short*3)+offset[0], y*scale+x*(scale/2)+offset[1], scale/2))
+
 
 
 def hexagon(x, y, size):

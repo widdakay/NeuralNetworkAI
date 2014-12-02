@@ -119,9 +119,9 @@ class App:
 					self._running = False
 				if event.type == MOUSEBUTTONDOWN:
 					if event.button == 4:
-						self.setScale(self.scale, self.scale - 1)
+						self.setScale(self.scale, self.scale * 1.03)
 					if event.button == 5:
-						self.setScale(self.scale, self.scale + 1)
+						self.setScale(self.scale, self.scale * 0.97)
 				
 
 			self.on_loop()
