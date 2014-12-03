@@ -84,12 +84,20 @@ class Map():
 				short = scale/(2*math.sqrt(3))
 				side = short*2
 
-				pygame.draw.polygon(surf, color, hexagon(x*(short*3)+offset[0], y*scale+x*(scale/2)+offset[1], scale/2))
-				pygame.draw.lines(surf, (255,255,255), True, hexagon(x*(short*3)+offset[0], y*scale+x*(scale/2)+offset[1], scale/2))
+				pygame.draw.polygon(surf, color, hexagon(self.project([x,y], offset, scale), scale/2))
+				pygame.draw.lines(surf, (255,255,255), True, hexagon(self.project([x,y], offset, scale), scale/2))
+	def project(self, worldPos, offset, scale):
+		short = scale/(2*math.sqrt(3))
+		side = short*2
+
+		return [worldPos[0]*(short*3)+offset[0], worldPos[1]*scale+worldPos[0]*(scale/2)+offset[1]]
 
 
 
-def hexagon(x, y, size):
+def hexagon(pos, size):
+	x = pos[0]
+	y = pos[1]
+
 	sqrt3 = math.sqrt(3)
 	short = size/sqrt3
 	side = short*2
