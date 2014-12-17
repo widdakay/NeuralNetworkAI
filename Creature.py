@@ -1,26 +1,27 @@
 import math, pygame, random
-from ConnerNetwork import Network
+from network import Network
 
 class Creature():
 	def __init__(self):
 		self.pos = [0,0]
 		self.hunger = 0
 		self.health = 10
-		self.network = Network([3,3,2])
+		self.network = Network()
 		self.counter = 0
 		self._living = False
+		self.color = (127,255,64)
+		self.direction = 0
 
 
-	def draw(self, surf, viewPos, scale):
-		color = (191,255,32)
-		short = scale/(2*math.sqrt(3))
-
-		offset = [
+	def draw(self, surf, world):
+		offset = world.project(self.pos)
+		offset = [int(offset[0]+world.scale/2), int(offset[1]+world.scale/2)]
+		"""[
 		int(viewPos[0] + self.pos[0]*(short*3) + short*2),
 		int(viewPos[1] + self.pos[1]*scale+self.pos[0]*(scale/2) + scale/2)
-		]
+		]"""
 
-		pygame.draw.circle(surf, color, offset, int(scale/2))
+		pygame.draw.circle(surf, self.color, offset, int(world.scale/2))
 
 	def place(self, world):
 		while self._living == False:
@@ -43,7 +44,15 @@ class Creature():
 		except IndexError:
 			self._living = False
 			return
-			
+
+	def getInputArray(self, map):
+		array = []
+		# is there a dangerous object ahead
+		# is there food ahead
+
+		if self.direction == 0:
+			array[0] = map[self.pos[0]+0][self.pos[1]]
+		
 
 	def sim(self, world):
 		if self._living == False:
@@ -53,8 +62,8 @@ class Creature():
 		if self.pos[1] >= world.ySize:
 			self.pos[1] == 0
 
-		if self.counter % 7 == 0:
-			self.pos[0] += 1
+		if self.counter % 1 == 0:
+			self.pos = world.move(self.pos, 0, 1)
 
 		self.timestep(world)
 		

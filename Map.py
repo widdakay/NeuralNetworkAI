@@ -5,7 +5,12 @@ class Map():
 	def __init__(self, xSize, ySize):
 		self.xSize = xSize
 		self.ySize = ySize
+		self.scale = 30
+		self.viewPos = [0,0]
 		self.map = [[0 for x in xrange(self.xSize)] for y in xrange(self.ySize)]
+
+		pygame.font.init()
+		self.font = pygame.font.Font(None, 30)
 	
 	def getNeighbors(self, x, y):
 		return (self.map[x][y])
@@ -65,7 +70,7 @@ class Map():
 
 
 
-	def draw(self, surf, offset, scale):
+	def draw(self, surf):
 		for x in range(len(self.map)):
 			for y in range(len(self.map[x])):
 				#print x, y, self.map[x][y]
@@ -81,16 +86,40 @@ class Map():
 				#color = (random.random()*255,random.random()*255,random.random()*255)
 				#pygame.draw.rect(surf, color, (x*20,y*20,20,20))
 
-				short = scale/(2*math.sqrt(3))
-				side = short*2
+				pygame.draw.polygon(surf, color, hexagon(self.project([x,y]), self.scale/2))
+				pygame.draw.lines(surf, (255,255,255), True, hexagon(self.project([x,y]), self.scale/2))
+		self.drawHUD(surf)
 
-				pygame.draw.polygon(surf, color, hexagon(self.project([x,y], offset, scale), scale/2))
-				pygame.draw.lines(surf, (255,255,255), True, hexagon(self.project([x,y], offset, scale), scale/2))
-	def project(self, worldPos, offset, scale):
-		short = scale/(2*math.sqrt(3))
+	def drawHUD(self, surf):
+		label = self.font.render("Beta", 1, (255,255,255))
+		surf.blit(label, (10,10))
+
+	def project(self, worldPos):
+		short = self.scale/(2*math.sqrt(3))
 		side = short*2
 
-		return [worldPos[0]*(short*3)+offset[0], worldPos[1]*scale+worldPos[0]*(scale/2)+offset[1]]
+		x = int(worldPos[0]*(short*3)+self.viewPos[0])
+		if worldPos[0] % 2 == 1:
+			yOff = 0*(self.scale/2)
+		else:
+			yOff = -(self.scale/2)
+		y = int(worldPos[1]*self.scale+yOff+self.viewPos[1])
+
+		return [x, y]
+
+	def move(self, pos, dir, dist):
+		dx = 0
+		dy = 0
+		if dir == 0:
+			dy = 1
+		elif dir == 1:
+			if pos[0] % 2 == 1:
+				dy = 1
+			if pos[1] % 2 == 1:
+				dy = 1
+				dx = -1
+
+		return [pos[0]+dx, pos[1]+dy]
 
 
 
