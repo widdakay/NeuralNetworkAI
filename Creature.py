@@ -4,10 +4,10 @@ from network import Network
 class Creature():
 	def __init__(self):
 		self.pos = [0,0]
-		self.hunger = 0
+		self.hunger = 30
 		self.health = 10
 		self.network = Network()
-		self.counter = 0
+		self.ticks = 0
 		self._living = False
 		self.color = (127,255,64)
 		self.direction = 0
@@ -34,6 +34,23 @@ class Creature():
 			self.timestep(world)
 
 	def timestep(self, world):
+		self.ticks += 1
+		self.hunger -= 1
+		try:
+			if world.map[self.pos[0]][self.pos[1]] < 1:
+				self._living = False
+		except IndexError:
+			self._living = False
+			return
+
+		if world.map[self.pos[0]][self.pos[1]] == 9:
+			self.hunger += 30
+			world.map[self.pos[0]][self.pos[1]] -= 7
+		#print self.hunger
+
+		if self.hunger < 0:
+			self._living = False
+
 		if self.pos[0] > world.xSize or self.pos[0] < 0:
 			self._living = False
 
@@ -42,12 +59,7 @@ class Creature():
 
 		if self._living == False:
 			return
-		try:
-			if world.map[self.pos[0]][self.pos[1]] < 1:
-				self._living = False
-		except IndexError:
-			self._living = False
-			return
+
 
 	def getInputArray(self, map):
 		array = []
@@ -56,7 +68,7 @@ class Creature():
 
 		if self.direction == 0:
 			array[0] = map[self.pos[0]+0][self.pos[1]]
-		
+
 
 	def sim(self, world):
 		if self._living == False:
@@ -66,18 +78,19 @@ class Creature():
 		if self.pos[1] >= world.ySize:
 			self.pos[1] == 0
 
-		if self.counter % 1 == 0:
-			output = self.network.simulate([1,1,1])
+		if self.ticks % 1 == 0:
+			mid = world.getTileAt(world.move(self.pos, self.direction, 1))
+			left = world.getTileAt(world.move(self.pos, self.direction-1, 1))
+			right = world.getTileAt(world.move(self.pos, self.direction+1, 1))
+			output = self.network.simulate([mid, left, right])
 			self.direction += int(output[0])
 
-			
+
 			self.direction %= 6
 			self.pos = world.move(self.pos, self.direction, 1)
-			print self.direction
 
 		self.timestep(world)
-		
-		self.counter += 1
+
 
 
 if __name__ == "__main__":

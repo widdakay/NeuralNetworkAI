@@ -11,15 +11,18 @@ class Map():
 
 		pygame.font.init()
 		self.font = pygame.font.Font(None, 30)
-	
+
 	def getNeighbors(self, x, y):
 		return (self.map[x][y])
+
+	def getTileAt(self, pos):
+		return self.map[pos[0]][pos[1]]
 
 	def generate(self):
 		islandPos = [random.uniform(0,self.xSize/8), random.uniform(0,self.ySize/8)]
 		islandPos[0] += self.xSize/2 - self.xSize/8
 		islandPos[1] += self.ySize/2 - self.ySize/8
-		
+
 		islandScale = [random.uniform(0,self.xSize/2), random.uniform(0,self.ySize/2)]
 		islandScale[0] += (islandScale[0]+islandScale[1])/2
 		islandScale[1] += (islandScale[0]+islandScale[1])/2
@@ -87,7 +90,7 @@ class Map():
 				#pygame.draw.rect(surf, color, (x*20,y*20,20,20))
 
 
-				
+
 				#pygame.draw.circle(surf, color, [int(self.project([x,y])[0]+2*side), int(self.project([x,y])[1]+2*side)], self.scale/2)
 
 				pygame.draw.polygon(surf, color, hexagon(self.project([x,y]), self.scale/2))
@@ -112,6 +115,7 @@ class Map():
 		return [x, y]
 
 	def move(self, pos, dir, dist):
+		dir %= 6
 		neighbors = [
 		   [ [+1,  0], [+1, -1], [ 0, -1],
 		     [-1, -1], [-1,  0], [ 0, +1] ],
