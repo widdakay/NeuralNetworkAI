@@ -86,6 +86,10 @@ class Map():
 				#color = (random.random()*255,random.random()*255,random.random()*255)
 				#pygame.draw.rect(surf, color, (x*20,y*20,20,20))
 
+
+				
+				#pygame.draw.circle(surf, color, [int(self.project([x,y])[0]+2*side), int(self.project([x,y])[1]+2*side)], self.scale/2)
+
 				pygame.draw.polygon(surf, color, hexagon(self.project([x,y]), self.scale/2))
 				pygame.draw.lines(surf, (255,255,255), True, hexagon(self.project([x,y]), self.scale/2))
 		self.drawHUD(surf)
@@ -108,18 +112,15 @@ class Map():
 		return [x, y]
 
 	def move(self, pos, dir, dist):
-		dx = 0
-		dy = 0
-		if dir == 0:
-			dy = 1
-		elif dir == 1:
-			if pos[0] % 2 == 1:
-				dy = 1
-			if pos[1] % 2 == 1:
-				dy = 1
-				dx = -1
-
-		return [pos[0]+dx, pos[1]+dy]
+		neighbors = [
+		   [ [+1,  0], [+1, -1], [ 0, -1],
+		     [-1, -1], [-1,  0], [ 0, +1] ],
+		   [ [+1, +1], [+1,  0], [ 0, -1],
+		     [-1,  0], [-1, +1], [ 0, +1] ]
+		]
+		parity = pos[0]%2
+		d = neighbors[parity][dir]
+		return [pos[0] + d[0], pos[1] + d[1]]
 
 
 
@@ -131,6 +132,14 @@ def hexagon(pos, size):
 	short = size/sqrt3
 	side = short*2
 
+	vertices = []
+
+	for i in range(6):
+		angle = 2 * math.pi / 6 * (i + 0.5)
+
+		vertices.append([size * math.cos(angle) + x, size * math.cos(angle) + y])
+		#print vertices
+	#return vertices
 	return (
 		(x+short, y),
 		(x+short+side, y),
@@ -140,3 +149,8 @@ def hexagon(pos, size):
 		(x+short, y+size*2),
 		(x, y+size)
 		)
+
+
+if __name__ == "__main__":
+	import Main
+	Main.run()

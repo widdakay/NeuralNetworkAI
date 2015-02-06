@@ -9,7 +9,6 @@ class Network(object):
 					[Neuron(2), Neuron(2), Neuron(2)]
 					]
 
-
 	def simulate(self, input):
 		for i in range(len(self.network[0])):
 			self.network[0][i].output = input[i]
@@ -48,11 +47,3 @@ if __name__ == "__main__":
 	print "Running tests..."
 	network = Network()
 	print network.simulate([1,1,1])
-
-
-
-
-
-
-
-

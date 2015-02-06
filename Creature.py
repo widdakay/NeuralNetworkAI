@@ -22,6 +22,10 @@ class Creature():
 		]"""
 
 		pygame.draw.circle(surf, self.color, offset, int(world.scale/2))
+		pygame.draw.line(surf, (255,0,0), offset, [
+			offset[0]+math.cos((5-self.direction+2)*(math.pi/3))*world.scale/2,
+			offset[1]+math.sin((5-self.direction+2)*(math.pi/3))*world.scale/2
+			])
 
 	def place(self, world):
 		while self._living == False:
@@ -63,8 +67,19 @@ class Creature():
 			self.pos[1] == 0
 
 		if self.counter % 1 == 0:
-			self.pos = world.move(self.pos, 0, 1)
+			output = self.network.simulate([1,1,1])
+			self.direction += int(output[0])
+
+			
+			self.direction %= 6
+			self.pos = world.move(self.pos, self.direction, 1)
+			print self.direction
 
 		self.timestep(world)
 		
 		self.counter += 1
+
+
+if __name__ == "__main__":
+	import Main
+	Main.run()
